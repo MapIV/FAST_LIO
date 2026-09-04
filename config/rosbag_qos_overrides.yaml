@@ -1,0 +1,15 @@
+# QoS overrides for `ros2 bag play`.
+#
+# The Ouster driver records /ouster/imu with best-effort reliability, while
+# FAST_LIO subscribes to the IMU topic with the default (reliable) profile
+# - see create_subscription(imu_topic, 10, ...) in laserMapping.cpp. Without
+# this override the profiles are incompatible and FAST_LIO receives no IMU at
+# all ("New subscription discovered ... requesting incompatible QoS").
+#
+# /ouster/points needs no override: FAST_LIO subscribes with SensorDataQoS,
+# which already matches the recorded best-effort profile.
+/ouster/imu:
+  reliability: reliable
+  durability: volatile
+  history: keep_last
+  depth: 5
